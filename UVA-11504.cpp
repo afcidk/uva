@@ -11,8 +11,8 @@ int dfn[MAX], low[MAX], clc;
 int inStack[MAX], inside[MAX], comp[MAX];
 int c_ele; //縮點完的個數
 
-// ex: 1->2 2->3 3->1
-// 縮完:  1->x 2->x 3->x
+//   ex: 1->2 2->3 3->1
+// 縮完: 1->x 2->x 3->x
 
 void dfs(int cur);
 void init(){

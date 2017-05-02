@@ -37,9 +37,9 @@ int main()
             cin>>s;
             name[i] = s;
         }
-
         scanf("%d", &m);
         getchar();
+
         for(int i=0; i<m; ++i){
             cin>>s>>t;
             int x = find(s);

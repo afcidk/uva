@@ -45,7 +45,7 @@ void dfs(int cur, int past){
 	int flag=0;
 
 	for(int i=0; i<vec[cur].size(); ++i){
-		
+
 		int nxt = vec[cur][i];
 		if(!dfn[nxt]){
 
