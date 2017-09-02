@@ -1,52 +1,47 @@
-#include<cstdio>
-#include<vector>
-#include<sstream>
-#include<iostream>
-#define MAX 1005
+#include <iostream>
+#include <cstdio>
+#include <vector>
+#include <cstring>
 using namespace std;
 
-void clean(string *);
+void parse(vector<string>&, string&);
 
 int main() {
-	string origin, temp, comp;
-	int count=0;
-	while(getline(cin, origin) && getline(cin, comp)){
+    string a, b;
+    int count=0;
+    while(getline(cin, a) && getline(cin, b)){
 
-		clean(&origin);
-		clean(&comp);
-		stringstream ss(origin);
-		stringstream st(comp);
+        vector<string> sta, stb;
+        parse(sta, a);
+        parse(stb, b);
 
-		vector<string> vec, com;
-		int vec_len=0, com_len=0;
-		while(ss>>temp){
-			vec.push_back(temp);
-			vec_len++;
-		}
+        int rec[sta.size()+1][stb.size()+1];
+        memset(rec, 0, sizeof(rec));
+        for(int i=1; i<=sta.size(); ++i){
+            for(int j=1; j<=stb.size(); ++j){
+                if(sta[i-1] == stb[j-1])    rec[i][j] = rec[i-1][j-1]+1;
+                else rec[i][j] = max(rec[i-1][j], rec[i][j-1]);
+            }
+        }
 
-		while(st>>temp){
-			com.push_back(temp);
-			com_len++;
-		}
-
-		int xx[MAX][MAX]={0};
-		int i, j;
-
-		for(i=1; i<=vec_len; ++i){
-			for(j=1; j<=com_len; ++j){
-				if(vec[i-1]==com[j-1])	xx[i][j] = xx[i-1][j-1]+1;
-				else xx[i][j] = max(xx[i-1][j], xx[i][j-1]);
-			}
-		}
-
-		if(xx[vec_len][com_len]==0)	printf("%2d. Blank!\n", ++count);
-		else printf("%2d. Length of longest match: %d\n", ++count, xx[vec_len][com_len]);
-	}
+        if(a.length()==0 || b.length()==0)  printf("%2d. Blank!\n", ++count);
+        else printf("%2d. Length of longest match: %d\n", ++count, rec[sta.size()][stb.size()]);
+    }
+    return 0;
 }
 
-void clean(string *s){
-	int i, len=(*s).length();
-	for(i=0; i<len; ++i)	{
-		if(!isalnum((*s).at(i)))	(*s).at(i)=' ';
-	}
+void parse(vector<string> &x, string &s){
+    int len=s.length();
+    int start=0;
+    for(int i=0; i<len; ++i){
+        if(!(('a'<=s[i]&&s[i]<='z') || ('A'<=s[i]&&s[i]<='Z') || ('0'<=s[i]&&s[i]<='9'))){
+            if(i-start>0){
+                x.push_back(s.substr(start, i-start));
+            }
+            start=i+1;
+        }
+    }
+    if(start != len){
+        x.push_back(s.substr(start, len-start));
+    }
 }

@@ -1,79 +1,73 @@
-#include<iostream>
-#include<cstdio>
-#define MAX 600
+#include <iostream>
+#include <cstdio>
 using namespace std;
 
+long long int num[505];
+
 int main() {
-	int n;
-	scanf("%d", &n);
-	while(n--){
-		int book[MAX];
-		int num, divide;
-		scanf("%d%d", &num, &divide);
-		
-		int i;
-		long long int left=0, right=0;
-		for(i=0; i<num; ++i){
-			scanf("%d", &book[i]);
-			left=left>book[i]?left:book[i];
-			right+=book[i];
-		}
+    int n;
+    scanf("%d", &n);
+    while(n--){
+        int k, m;
+        scanf("%d%d", &k, &m);
+        long long int left=0, right=0;
+        for(int i=0; i<k; ++i){
+            scanf("%lld", &num[i]);
+            left = left>num[i]?left:num[i];
+            right += num[i];
+        }
 
-		while(left<right){
+        //find maximum volume
+        while(left<right){
 
-			int mid=(left+right)/2;
-			long long int count=0, sum=0;
-			for(i=0; i<num; ++i){
-				sum+=book[i];
+            long long int sum=0, count=0;
+            long long int mid = (left+right)/2;
+            for(int i=0; i<k; ++i){
+                sum += num[i];
+                if(sum>mid){
+                    sum=num[i];
+                    ++count;
+                }
+                if(sum==mid){
+                    sum=0;
+                    ++count;   
+                }
+            }
+            if(sum>0)   ++count;
 
-				if(sum>mid){
-					sum=book[i];
-					count++;
-				}
-				else if(sum == mid){
-					sum=0;
-					count++;
-				}
-			}
-			if(sum>0)	count++;
+            if(count>m) left=mid+1;
+            else right=mid;
+        }
 
-			if(count>divide)	left=mid+1;
-			else right=mid;
-		}
+        //pair and record with max volume, start from end
+        int rec[m-1]={0}, sum=0;
+        for(int i=k-1, j=m-2; i>=0 && j>=0; --i){
+           sum += num[i];
+           if(sum>left){
+               sum=num[i];
+               rec[j--]=i+1;
+           }
+           if(i == j){// everyone must have at least one book
+               while(j>=0){
+                   rec[j--]=i+1;
+                   --i;
+               }
+               break;
+           }
+        }
 
-		int rec[MAX], pos=-1, tn=num;
-		long long int now=0;
-		for(i=num-1; i>=0; --i){
-			now+=book[i];
-			tn--;
-			if(now > left){
-				now = book[i];
-				divide--;
-				rec[++pos] = i+1;
-			}
-			
-			if(tn+1 == divide){
-				rec[++pos] = i;
-				break;
-			}
-
-		}
-
-		int next=pos;
-		for(i=0; i<tn; ++i){
-			printf("%d / ", book[i]);
-			next=pos-1;
-		}
-		for(i=tn; i<num-1; ++i){
-			if(i == rec[next]){
-				if(rec[next]!=0)	printf("/ ");
-				next--;
-			}
-			printf("%d ", book[i]);
-		}
-		if(num-1 == rec[next] && rec[next]!=0)	printf("/ ");
-		printf("%d\n", book[num-1]);
-
-	}
-	return 0;
+        for(int i=0; i<rec[0]; ++i) printf("%lld ", num[i]);
+        printf("/ ");
+        for(int i=0; i<m-1; ++i){
+            int end=(i==m-2)?k:rec[i+1];
+            for(int j=rec[i]; j<end; ++j){
+                printf("%lld", num[j]);
+                if(j!=end-1)    printf(" ");
+            }
+            if(i!=m-2)  printf(" / ");
+        }
+        puts("");
+    }
+    return 0;
 }
+
