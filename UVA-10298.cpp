@@ -1,36 +1,33 @@
-#include<iostream>
-#include<cstdio>
-#include<cstring>
-#define MAX 1000005
+#include <iostream>
+#include <cstdio>
+#include <cstring>
 using namespace std;
 
-bool match(char*, int);
+char s[1000005];
 
 int main() {
-	char s[MAX];
-	while(scanf("%s", s)==1){
-		if(strcmp(s, ".") == 0)	break;
-		int i, len=strlen(s);
-		
-		for(i=0; i<len; ++i){
-			if(len%(i+1)==0){
-				if(match(s, i+1))	break;
+	while(scanf("%s", s) && strcmp(s, ".")!=0){
+		int len=strlen(s), ans=0;
+		for(int i=1; i<=len; ++i){
+			if(len%i == 0){
+				bool fail=false;
+				int count=0;
+				for(int j=0; j<len; ++j){
+					if(count == i)	count=0;
+					if(s[j]!=s[count]){
+						fail=true;
+						break;
+					}
+					++count;
+				}
+				if(!fail){
+					ans=i;
+					break;
+				}
 			}
 		}
-		printf("%d\n", len/(i+1));
+		printf("%d\n", len/ans);
 	}
+	return 0;
 }
 
-
-bool match(char *s, int sub){
-	int len = strlen(s);
-
-	int i, substep = 0;
-	for(i=0; i<len; ++i){
-
-		if(s[i]!=s[substep])	return 0;
-		substep++;
-		if(substep == sub)	substep = 0;
-	}
-	return 1;
-}
